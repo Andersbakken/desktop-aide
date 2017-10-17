@@ -51,4 +51,18 @@
               (eval (read (current-buffer)))))
     (error nil)))
 
+(defun --desktop-aids-insert-file-contents (filename)
+  (condition-case nil
+      (insert-file-contents filename)
+    (error nil)))
+
+(defun --desktop-aids-post-command-hook ()
+  (when (buffer-local-value --desktop-aids-pending-offset (current-buffer))
+    (--desktop-aids-insert-file-contents (buffer-file-name))
+    ;; (condition-case nil
+    ;;     (progn
+    ;;       (insert-file-contents (buffer-file-name))
+    ;;       (set-auto-mode))
+    ;;   (error nil))
+    (kill-local-variable '--desktop-aids-pending-offset)))
 
